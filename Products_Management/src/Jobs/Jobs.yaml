@@ -1,0 +1,44 @@
+resources:
+  jobs:
+    Job_Product_Market_Prices:
+      name: "Job_Product_Market_Prices "
+      tasks:
+        - task_key: ETL_Bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/1-Bronze_ETL/ETL_BRONZE_LOAD
+            source: WORKSPACE
+        - task_key: ETL_Silver
+          depends_on:
+            - task_key: ETL_Bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/2-Silver_ETL/ETL_SILVER
+            source: WORKSPACE
+        - task_key: ETL_Dim_Market
+          depends_on:
+            - task_key: ETL_Silver
+          notebook_task:
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_DIM_MARKET
+            source: WORKSPACE
+        - task_key: ETL_Dim_Product
+          depends_on:
+            - task_key: ETL_Silver
+          notebook_task:
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_DIM_PRODUCT
+            source: WORKSPACE
+        - task_key: ETL_Dim_Time
+          depends_on:
+            - task_key: ETL_Silver
+          notebook_task:
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_DIM_TIME
+            source: WORKSPACE
+        - task_key: ETL_Fact_Product_Market_Historical
+          depends_on:
+            - task_key: ETL_Dim_Market
+            - task_key: ETL_Dim_Product
+            - task_key: ETL_Dim_Time
+          notebook_task:
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_FACT_PRODUCTS
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
