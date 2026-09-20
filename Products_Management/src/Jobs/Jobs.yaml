@@ -2,34 +2,43 @@ resources:
   jobs:
     Job_Product_Market_Prices:
       name: "Job_Product_Market_Prices "
+      email_notifications:
+        on_success:
+          - alex051019@gmail.com
+        on_failure:
+          - alex051019@gmail.com
+      schedule:
+        quartz_cron_expression: 44 0 9 * * ?
+        timezone_id: America/Guatemala
+        pause_status: UNPAUSED
       tasks:
         - task_key: ETL_Bronze
           notebook_task:
-            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/1-Bronze_ETL/ETL_BRONZE_LOAD
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/2-Bronze_ETL/ETL_BRONZE
             source: WORKSPACE
         - task_key: ETL_Silver
           depends_on:
             - task_key: ETL_Bronze
           notebook_task:
-            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/2-Silver_ETL/ETL_SILVER
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3-Silver_ETL/ETL_SILVER
             source: WORKSPACE
         - task_key: ETL_Dim_Market
           depends_on:
             - task_key: ETL_Silver
           notebook_task:
-            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_DIM_MARKET
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/4-Gold_ETL/ETL_DIM_MARKET
             source: WORKSPACE
         - task_key: ETL_Dim_Product
           depends_on:
             - task_key: ETL_Silver
           notebook_task:
-            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_DIM_PRODUCT
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/4-Gold_ETL/ETL_DIM_PRODUCT
             source: WORKSPACE
         - task_key: ETL_Dim_Time
           depends_on:
             - task_key: ETL_Silver
           notebook_task:
-            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_DIM_TIME
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/4-Gold_ETL/ETL_DIM_TIME
             source: WORKSPACE
         - task_key: ETL_Fact_Product_Market_Historical
           depends_on:
@@ -37,7 +46,7 @@ resources:
             - task_key: ETL_Dim_Product
             - task_key: ETL_Dim_Time
           notebook_task:
-            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/3_Gold_ETL/ETL_FACT_PRODUCTS
+            notebook_path: /Workspace/Users/jarodriguezv91@gmail.com/Product_Management_D_E_Portfolio/Products_Management/src/ETL/4-Gold_ETL/ETL_FACT_PRODUCTS
             source: WORKSPACE
       queue:
         enabled: true
