@@ -14,6 +14,9 @@ Se realizó la construcción de un pipeline de datos end to end, utilizando como
 
 Para garantizar datos confiables, escalables y limpios, se construyó el pipeline bajo una arquitectura moderna basada en capas (Medallion Architecture).
 
+<img width="2152" height="487" alt="Arch-Medallion" src="https://github.com/user-attachments/assets/80062b78-346f-427d-ac5f-a1716493ba85" />
+
+
 - **Capa Landing:** Es la primera capa en la cual se alojan los registros en DataBricks, se reciben de la API desde DeepSeek, por cada uno de los archivos PDF provenientes de la fuente.
 - **Capa Bronze:** Se recopilan los datos en formato STRING, son provenientes de la capa Landing, en el cual se aplica el EDA correspondiente para conocer la calidad de los datos y aplicar los tratamientos correspondientes para mantener la integridad, limpieza y trazabilidad de la información.
 - **Capa Silver:** Donde se guardan la información que ha sido tratada con los procesos y estándares de limpieza, transformación basada en el tipo de dato.
