@@ -62,7 +62,30 @@ Se manejan 4 Reportes con sus correspondientes KPI, los cuales permite
 - Comparar el costo de vida y los precios de los productos entre las diferentes ciudades y departamentos de la semana analizada.
 - Permitir monitorear la variación porcentual de los precios semana a semana a nivel de producto, ciudad y departamento, detectando de inmediato qué productos presentan anomalías o alzas críticas
 - Analizar el comportamiento temporal de los precios históricos a lo largo de las semanas y los años utilizando el eje cronológico de la fluctuación de los precios en las distintas semanas en cada año.
-- Evaluar los ciclos macroeconómicos a nivel trimestral 
+- Evaluar los ciclos macroeconómicos a nivel trimestral y analizar los posibles patrones recurrentes
+
+  <img width="879" height="516" alt="DS_1" src="https://github.com/user-attachments/assets/2a065b62-7845-42e8-b5cb-794bbad5f00c" />
+
+  Aplicación al Dashboard #1: Comparar el costo de vida y los precios de los productos entre las diferentes ciudades y departamentos de la semana analizada.
+
+
+  <img width="878" height="521" alt="DS_2" src="https://github.com/user-attachments/assets/226009e2-68ba-4b7f-983a-bf1427e31582" />
+
+  Aplicación al Dashboard #2: Permitir monitorear la variación porcentual de los precios semana a semana a nivel de producto, ciudad y departamento, detectando de inmediato qué productos presentan anomalías o alzas críticas.
+
+  <img width="875" height="521" alt="DS_3" src="https://github.com/user-attachments/assets/044c8041-8b0d-4653-9ecd-fe21c19eaf61" />
+  
+Aplicación al Dashboard #3: Analizar el comportamiento temporal de los precios históricos a lo largo de las semanas y los años utilizando el eje cronológico de la fluctuación de los precios en las distintas semanas en cada año.
+  
+  <img width="881" height="520" alt="DS_4" src="https://github.com/user-attachments/assets/18a83a5c-05a7-4283-b3fc-9f4158003a2f" />
+  
+  Aplicación al Dashboard #4: Evaluar los ciclos macroeconómicos a nivel trimestral, para evaluar toma de decisiones en base a comportamientos.
+
+
+
+
+
+  
 
 ## **Fuente de los Datos**
 
