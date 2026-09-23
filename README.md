@@ -19,13 +19,19 @@ Se realizó la construcción de un pipeline de datos end to end, utilizando como
 
 Para garantizar datos confiables, escalables y limpios, se construyó el pipeline bajo una arquitectura moderna basada en capas (Medallion Architecture).
 
+Aplicando las mejores prácticas tales como:
+- EDA
+- Idempotencia
+- Unity Catalog
+- Optimización por Liquid Clustering
+
 <img width="2152" height="487" alt="Arch-Medallion" src="https://github.com/user-attachments/assets/80062b78-346f-427d-ac5f-a1716493ba85" />
 
 
 - **Capa Landing:** Es la primera capa en la cual se alojan los registros en DataBricks, se reciben de la API desde DeepSeek, por cada uno de los archivos PDF provenientes de la fuente.
 - **Capa Bronze:** Se recopilan los datos en formato STRING, son provenientes de la capa Landing, en el cual se aplica el EDA correspondiente para conocer la calidad de los datos y aplicar los tratamientos correspondientes para mantener la integridad, limpieza y trazabilidad de la información.
 - **Capa Silver:** Donde se guardan la información que ha sido tratada con los procesos y estándares de limpieza, transformación basada en el tipo de dato. Se aplicó Idempotencia para evitar redundancia de la información migrada desde Bronze.
-- **Capa Gold:** Creación del modelo dimensional utilizado, los datos fueron construidos bajo el modelo Star Schema, en el cual se cuenta con 3 Tablas dimensionales (Tiempo, Producto y Mercados) en cual la información se ha simplificado y armado las relaciones con la tabla de Hechos para almacenar el histórico de los precios de los productos, para las tablas Fact_product_Prices, Dim_Market, Dim_Producto se usa la lógica de SCD_1, mientras que para Dim_Time se aplica SCD_0.
+- **Capa Gold:** Creación del modelo dimensional utilizado, los datos fueron construidos bajo el modelo **STAR SCHEMA** , en el cual se cuenta con 3 Tablas dimensionales (Tiempo, Producto y Mercados) en cual la información se ha simplificado y armado las relaciones con la tabla de Hechos para almacenar el histórico de los precios de los productos, para las tablas Fact_product_Prices, Dim_Market, Dim_Producto se usa la lógica de SCD_1, mientras que para Dim_Time se aplica SCD_0.
 - **Capa Semántica:**: Esta capa se crearon las vistas para simplificar las consultas de los datos, para tener disponibles a los usuarios interesados en las posibles áreas de negocio, así como también otras áreas para su tratamiento y análisis.
 
 Se manejó el conteo de datos entre cada capa dando como resultado:
@@ -33,6 +39,12 @@ Se manejó el conteo de datos entre cada capa dando como resultado:
 - 1. Bronze: ==> 6571
 - 2. Silver: ==> 5733
 - 3. Gold: ==> 5578
+
+Se integró un JOB en el cual se encarga de ejecutarse de manera quincenal, el cual tiene el end-to-end desde el ETL de la capa Bronze hasta la capa Gold. Con un tiempo de ejecución de unos 2.30 min aproximadamente
+
+<img width="802" height="274" alt="JOB" src="https://github.com/user-attachments/assets/d234fae2-e105-465c-8d85-e49d6a9245e6" />
+
+<img width="970" height="527" alt="Job_2" src="https://github.com/user-attachments/assets/fa685582-d3bb-4c7a-9dbf-42b0d409c618" />
 
 
 ## **Tecnologías Utilizadas**
@@ -66,26 +78,23 @@ Se manejan 4 Reportes con sus correspondientes KPI, los cuales permite
 
   <img width="879" height="516" alt="DS_1" src="https://github.com/user-attachments/assets/2a065b62-7845-42e8-b5cb-794bbad5f00c" />
 
-  Aplicación al Dashboard #1: Comparar el costo de vida y los precios de los productos entre las diferentes ciudades y departamentos de la semana analizada.
+**Aplicación al Dashboard #1:** Comparar el costo de vida y los precios de los productos entre las diferentes ciudades y departamentos de la semana analizada.
 
 
   <img width="878" height="521" alt="DS_2" src="https://github.com/user-attachments/assets/226009e2-68ba-4b7f-983a-bf1427e31582" />
 
-  Aplicación al Dashboard #2: Permitir monitorear la variación porcentual de los precios semana a semana a nivel de producto, ciudad y departamento, detectando de inmediato qué productos presentan anomalías o alzas críticas.
+**Aplicación al Dashboard #2:** Permitir monitorear la variación porcentual de los precios semana a semana a nivel de producto, ciudad y departamento, detectando de inmediato qué productos presentan anomalías o alzas críticas.
+
 
   <img width="875" height="521" alt="DS_3" src="https://github.com/user-attachments/assets/044c8041-8b0d-4653-9ecd-fe21c19eaf61" />
   
-Aplicación al Dashboard #3: Analizar el comportamiento temporal de los precios históricos a lo largo de las semanas y los años utilizando el eje cronológico de la fluctuación de los precios en las distintas semanas en cada año.
+**Aplicación al Dashboard #3:** Analizar el comportamiento temporal de los precios históricos a lo largo de las semanas y los años utilizando el eje cronológico de la fluctuación de los precios en las distintas semanas en cada año.
+
   
   <img width="881" height="520" alt="DS_4" src="https://github.com/user-attachments/assets/18a83a5c-05a7-4283-b3fc-9f4158003a2f" />
   
-  Aplicación al Dashboard #4: Evaluar los ciclos macroeconómicos a nivel trimestral, para evaluar toma de decisiones en base a comportamientos.
+**Aplicación al Dashboard #4:** Evaluar los ciclos macroeconómicos a nivel trimestral, para evaluar toma de decisiones en base a comportamientos.
 
-
-
-
-
-  
 
 ## **Fuente de los Datos**
 
