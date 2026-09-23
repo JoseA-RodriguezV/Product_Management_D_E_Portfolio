@@ -5,6 +5,11 @@
 
 Se realizó la construcción de un pipeline de datos end to end, utilizando como fuente de información el monitoreo de los precios de la canasta básica en Honduras, la fuente de información es recolectada de la página web gubernamental de la SDE (_Secretaria del Desarrollo Económico_), quienes hacen la medición de los precios en los mercados de las 2 ciudades más importantes del país, se aplicó uso de la IA para procesar los documentos publicados mes a mes para ser consumidos a través de una API, aplicando el formato de Arquitectura Medallion para su procesamiento.
 
+## **Hipótesis**
+
+- ¿Los precios de los productos estan influenciados por factores como: Ciudad, Localización, Sucesos externos?
+- ¿La inflación en el precio de los productos por trimestre, esta vinculado a sucesos estacionales o temas climáticos ?
+
 ### **Objetivos**
 
 - Implementar un sistema automatizado de control mediante el Dashboard de Variación Semanal para rastrear los precios de los productos mas importantes que componen la canasta básica en Honduras, logrando identificar y alertar sobre variaciones de precios atípicas (superiores un porcentaje semanal) en los principales mercados del país a lo largo del año 2025-2026.
@@ -19,12 +24,12 @@ Para garantizar datos confiables, escalables y limpios, se construyó el pipelin
 
 - **Capa Landing:** Es la primera capa en la cual se alojan los registros en DataBricks, se reciben de la API desde DeepSeek, por cada uno de los archivos PDF provenientes de la fuente.
 - **Capa Bronze:** Se recopilan los datos en formato STRING, son provenientes de la capa Landing, en el cual se aplica el EDA correspondiente para conocer la calidad de los datos y aplicar los tratamientos correspondientes para mantener la integridad, limpieza y trazabilidad de la información.
-- **Capa Silver:** Donde se guardan la información que ha sido tratada con los procesos y estándares de limpieza, transformación basada en el tipo de dato.
-- **Capa Gold:** Creación del modelo dimensional utilizado, los datos fueron construidos bajo el modelo Star Schema, en el cual se cuenta con 3 Tablas dimensionales (Tiempo, Producto y Mercados) en cual la información se ha simplificado y armado las relaciones con la tabla de Hechos para almacenar el histórico de los precios de los productos
+- **Capa Silver:** Donde se guardan la información que ha sido tratada con los procesos y estándares de limpieza, transformación basada en el tipo de dato. Se aplicó Idempotencia para evitar redundancia de la información migrada desde Bronze.
+- **Capa Gold:** Creación del modelo dimensional utilizado, los datos fueron construidos bajo el modelo Star Schema, en el cual se cuenta con 3 Tablas dimensionales (Tiempo, Producto y Mercados) en cual la información se ha simplificado y armado las relaciones con la tabla de Hechos para almacenar el histórico de los precios de los productos, para las tablas Fact_product_Prices, Dim_Market, Dim_Producto se usa la lógica de SCD_1, mientras que para Dim_Time se aplica SCD_0.
 - **Capa Semántica:**: Esta capa se crearon las vistas para simplificar las consultas de los datos, para tener disponibles a los usuarios interesados en las posibles áreas de negocio, así como también otras áreas para su tratamiento y análisis.
 
 Se manejó el conteo de datos entre cada capa dando como resultado:
-Capa	    
+    
 - 1. Bronze: ==> 6571
 - 2. Silver: ==> 5733
 - 3. Gold: ==> 5578
@@ -42,10 +47,11 @@ Capa
 ## **Modelado de Datos**
 
 Se aplicó en la Capa Gold, el diseño de **Star Schema**, el cual permite mantener la granularidad de los datos, optimizado para las consultas y las relaciones con su tabla de hechos.
-**Tablas Dimensionales: **
+
+**Tablas Dimensionales:**
 Dim_Time: Utilizada bajo SCD_0, por su nulo cambio de los datos, el cual almacena los periodos de tiempo del análisis de los precios 
 Dim_Product: Utilizada para almacenar el listado de los productos de la canasta, utilizando el SCD_1
-Dim_Market: Almacena el nombre de los mercados en los que se aplica el análisis de los precios de los productos
+Dim_Market: Almacena el nombre de los mercados en los que se aplica el análisis de los precios de los productos, utilizando el SCD_1
 Fact_Products:Tabla de hechos, diseñada con la granularidad de mantener la estructura de entidad/relación con las tablas DIM, bajo la cardinalidad de sus llaves foráneas (FK) hacia las llaves principales (PK) de las tablas dimensión
 
 ## **Dashboard Análitico**
