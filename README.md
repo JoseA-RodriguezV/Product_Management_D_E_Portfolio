@@ -105,12 +105,12 @@ En el cual realizan las publicaciones aproximadamente cada 15 días o mensual co
 ## **Estructura del Repositorio**
 El repositorio alojado y versionado en GitHub, cada una de estas carpetas contienen 1 archivo notebook y por capa de cada objeto creado o ejecutado.
 
-- DDL: Para la elaboración de los objetos tales como tablas Delta, vistas, esquemas.
-- EDA: Contiene el análisis correspondiente de la exploración de los datos
-- ETL: Para la extracción de los datos, Transformación y Carga de dichos registros para la siguiente capa.
-- Dashboard: Se maneja el guardado del archivo de PowerBI como respaldo en nube
-- Jobs: Versionamiento para los Jobs que se ejecutan, así como las parametrizaciones correspondientes.
-- PDF_Files: Se almacena los PDF fuente de la información mensual de los precios, dicha carpeta es leída por el JOB para pasar los datos a DeepSeek para su retorno como un formato válido.
+- **`DDL/`**: Para la elaboración de los objetos tales como tablas Delta, vistas, esquemas.
+- **`EDA/`**: Contiene el análisis correspondiente de la exploración de los datos
+- **`ETL/`**: Para la extracción de los datos, Transformación y Carga de dichos registros para la siguiente capa.
+- **`Dashboard/`**: Se maneja el guardado del archivo de PowerBI como respaldo en nube
+- **`Jobs/`**: Versionamiento para los Jobs que se ejecutan, así como las parametrizaciones correspondientes.
+- **`PDF_Files/`**: Se almacena los PDF fuente de la información mensual de los precios, dicha carpeta es leída por el JOB para pasar los datos a DeepSeek para su retorno como un formato válido.
 
 
 
