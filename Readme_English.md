@@ -1,116 +1,42 @@
 # **Honduras Basic Food Basket Analytics**
 
+## **Description & Objectives**
 
-## **Descripción y Objetivos**
+An end-to-end data pipeline was developed using price monitoring data for the basic food basket in Honduras. The primary data source consists of monthly documents published by the SDE (*Secretaría de Desarrollo Económico* - Ministry of Economic Development), which measures prices across markets in the country's two main cities. AI was leveraged to process the monthly PDF documents and serve the extracted data via an API, implementing a Medallion Architecture for data processing.
 
-Se realizó la construcción de un pipeline de datos end to end, utilizando como fuente de información el monitoreo de los precios de la canasta básica en Honduras, la fuente de información es recolectada de la página web gubernamental de la SDE (_Secretaria del Desarrollo Económico_), quienes hacen la medición de los precios en los mercados de las 2 ciudades más importantes del país, se aplicó uso de la IA para procesar los documentos publicados mes a mes para ser consumidos a través de una API, aplicando el formato de Arquitectura Medallion para su procesamiento.
+## **Hypotheses**
 
-## **Hipótesis**
+- Are product prices influenced by factors such as city, location, or external events?
+- Is quarterly product price inflation tied to seasonal events or climate factors?
 
-- ¿Los precios de los productos estan influenciados por factores como: Ciudad, Localización, Sucesos externos?
-- ¿La inflación en el precio de los productos por trimestre, esta vinculado a sucesos estacionales o temas climáticos ?
+### **Objectives**
 
-### **Objetivos**
+- Implement an automated monitoring system using a **Weekly Variation Dashboard** to track the prices of key basic food basket products in Honduras. This enables the identification and alerting of atypical price variations (exceeding a threshold weekly percentage) across major national markets throughout 2025–2026.
+- Establish a predictive and historical analysis model to evaluate inflationary and seasonal behavior in the Honduran basic food basket, automating medium-term trend reports integrated with Databricks Medallion Architecture during 2025–2026.
 
-- Implementar un sistema automatizado de control mediante el Dashboard de Variación Semanal para rastrear los precios de los productos mas importantes que componen la canasta básica en Honduras, logrando identificar y alertar sobre variaciones de precios atípicas (superiores un porcentaje semanal) en los principales mercados del país a lo largo del año 2025-2026.
-- Establecer un modelo predictivo y de análisis histórico para evaluar el comportamiento inflacionario y estacional de la canasta básica en Honduras, logrando automatizar reportes de tendencias a mediano plazo conectados a la arquitectura Medallion de Databricks durante el periodo 2025-2026.
+## **Architecture**
 
-## **Arquitectura**
+To ensure data reliability, scalability, and cleanliness, the pipeline was built following a modern layered architecture (**Medallion Architecture**).
 
-Para garantizar datos confiables, escalables y limpios, se construyó el pipeline bajo una arquitectura moderna basada en capas (Medallion Architecture).
-
-Aplicando las mejores prácticas tales como:
-- EDA
-- Idempotencia
+Best practices implemented include:
+- Exploratory Data Analysis (EDA)
+- Idempotency
 - Unity Catalog
-- Optimización por Liquid Clustering
+- Optimization via Liquid Clustering
 
 <img width="2152" height="487" alt="Arch-Medallion" src="https://github.com/user-attachments/assets/80062b78-346f-427d-ac5f-a1716493ba85" />
 
+- **Landing Layer:** The initial stage where raw data lands in Databricks. Data is received via API from DeepSeek for each PDF file sourced.
+- **Bronze Layer:** Stores data in `STRING` format ingested from the Landing layer. EDA is performed here to assess data quality and apply initial treatments ensuring information integrity, cleanliness, and traceability.
+- **Silver Layer:** Holds cleaned and transformed data standardized by data types. Idempotency is applied to prevent redundant records during migration from Bronze.
+- **Gold Layer:** Hosts the dimensional model built using a **STAR SCHEMA**. It features 3 dimension tables (`Dim_Time`, `Dim_Product`, and `Dim_Market`) simplified and linked to the Fact table (`Fact_Products`) to store historical product price data. Slowly Changing Dimension Type 1 (**SCD_1**) logic is applied to `Fact_Products`, `Dim_Market`, and `Dim_Product`, while **SCD_0** is applied to `Dim_Time`.
+- **Semantic Layer:** Contains created views to simplify queries and make data readily accessible for business stakeholders and analytical teams.
 
-- **Capa Landing:** Es la primera capa en la cual se alojan los registros en DataBricks, se reciben de la API desde DeepSeek, por cada uno de los archivos PDF provenientes de la fuente.
-- **Capa Bronze:** Se recopilan los datos en formato STRING, son provenientes de la capa Landing, en el cual se aplica el EDA correspondiente para conocer la calidad de los datos y aplicar los tratamientos correspondientes para mantener la integridad, limpieza y trazabilidad de la información.
-- **Capa Silver:** Donde se guardan la información que ha sido tratada con los procesos y estándares de limpieza, transformación basada en el tipo de dato. Se aplicó Idempotencia para evitar redundancia de la información migrada desde Bronze.
-- **Capa Gold:** Creación del modelo dimensional utilizado, los datos fueron construidos bajo el modelo **STAR SCHEMA** , en el cual se cuenta con 3 Tablas dimensionales (Tiempo, Producto y Mercados) en cual la información se ha simplificado y armado las relaciones con la tabla de Hechos para almacenar el histórico de los precios de los productos, para las tablas Fact_product_Prices, Dim_Market, Dim_Producto se usa la lógica de SCD_1, mientras que para Dim_Time se aplica SCD_0.
-- **Capa Semántica:**: Esta capa se crearon las vistas para simplificar las consultas de los datos, para tener disponibles a los usuarios interesados en las posibles áreas de negocio, así como también otras áreas para su tratamiento y análisis.
+Data record counts across layers:
+- 1. Bronze Layer: ==> 6,571
+- 2. Silver Layer: ==> 5,733
+- 3. Gold Layer: ==> 5,578
 
-Se manejó el conteo de datos entre cada capa dando como resultado:
-    
-- 1. Bronze: ==> 6571
-- 2. Silver: ==> 5733
-- 3. Gold: ==> 5578
+A **Databricks Job** was integrated to run bi-weekly, orchestrating the end-to-end process from the Bronze ETL to the Gold layer with an average execution time of ~2.30 minutes.
 
-Se integró un JOB en el cual se encarga de ejecutarse de manera quincenal, el cual tiene el end-to-end desde el ETL de la capa Bronze hasta la capa Gold. Con un tiempo de ejecución de unos 2.30 min aproximadamente
-
-<img width="802" height="274" alt="JOB" src="https://github.com/user-attachments/assets/d234fae2-e105-465c-8d85-e49d6a9245e6" />
-
-<img width="970" height="527" alt="Job_2" src="https://github.com/user-attachments/assets/fa685582-d3bb-4c7a-9dbf-42b0d409c618" />
-
-
-## **Tecnologías Utilizadas**
-* **Motor de Procesamiento:** Databricks / Apache Spark
-* **Lenguaje:** SQL (Spark SQL), Python
-* **Almacenamiento:** Delta Lake & Databricks
-* **Orquestación:** Databricks Workflows (Schedule quincenal)
-* **Control de Versiones:** Git / GitHub
-* **Generación de Reportes:** PowerBi conexión a DataBricks
-* **Otras Tecnologías:** DeepSeek
-
-## **Modelado de Datos**
-
-Se aplicó en la Capa Gold, el diseño de **Star Schema**, el cual permite mantener la granularidad de los datos, optimizado para las consultas y las relaciones con su tabla de hechos.
-
-**Tablas Dimensionales:**
-Dim_Time: Utilizada bajo SCD_0, por su nulo cambio de los datos, el cual almacena los periodos de tiempo del análisis de los precios 
-Dim_Product: Utilizada para almacenar el listado de los productos de la canasta, utilizando el SCD_1
-Dim_Market: Almacena el nombre de los mercados en los que se aplica el análisis de los precios de los productos, utilizando el SCD_1
-Fact_Products:Tabla de hechos, diseñada con la granularidad de mantener la estructura de entidad/relación con las tablas DIM, bajo la cardinalidad de sus llaves foráneas (FK) hacia las llaves principales (PK) de las tablas dimensión
-
-## **Dashboard Análitico**
-
-Se realizó la elaboración del dashboard, en PowerBI, estableciendo una conexión con DataBricks a traves de la configuración necesaria y realizar el consumo de las vistas creadas de la capa Semántica.
-
-Se manejan 4 Reportes con sus correspondientes KPI, los cuales permite
-- Comparar el costo de vida y los precios de los productos entre las diferentes ciudades y departamentos de la semana analizada.
-- Permitir monitorear la variación porcentual de los precios semana a semana a nivel de producto, ciudad y departamento, detectando de inmediato qué productos presentan anomalías o alzas críticas
-- Analizar el comportamiento temporal de los precios históricos a lo largo de las semanas y los años utilizando el eje cronológico de la fluctuación de los precios en las distintas semanas en cada año.
-- Evaluar los ciclos macroeconómicos a nivel trimestral y analizar los posibles patrones recurrentes
-
-  <img width="879" height="516" alt="DS_1" src="https://github.com/user-attachments/assets/2a065b62-7845-42e8-b5cb-794bbad5f00c" />
-
-**Aplicación al Dashboard #1:** Comparar el costo de vida y los precios de los productos entre las diferentes ciudades y departamentos de la semana analizada.
-
-
-  <img width="878" height="521" alt="DS_2" src="https://github.com/user-attachments/assets/226009e2-68ba-4b7f-983a-bf1427e31582" />
-
-**Aplicación al Dashboard #2:** Permitir monitorear la variación porcentual de los precios semana a semana a nivel de producto, ciudad y departamento, detectando de inmediato qué productos presentan anomalías o alzas críticas.
-
-
-  <img width="875" height="521" alt="DS_3" src="https://github.com/user-attachments/assets/044c8041-8b0d-4653-9ecd-fe21c19eaf61" />
-  
-**Aplicación al Dashboard #3:** Analizar el comportamiento temporal de los precios históricos a lo largo de las semanas y los años utilizando el eje cronológico de la fluctuación de los precios en las distintas semanas en cada año.
-
-  
-  <img width="881" height="520" alt="DS_4" src="https://github.com/user-attachments/assets/18a83a5c-05a7-4283-b3fc-9f4158003a2f" />
-  
-**Aplicación al Dashboard #4:** Evaluar los ciclos macroeconómicos a nivel trimestral, para evaluar toma de decisiones en base a comportamientos.
-
-
-## **Fuente de los Datos**
-
-Se tomó los boletines en formato PDF, que son publicados por la SDE(Secretaría de Desarrollo Económico) de Honduras a través de su portal [https://sde.gob.hn/proteccion-al-consumidor/boletines/](url). 
-
-En el cual realizan las publicaciones aproximadamente cada 15 días o mensual con los datos de las mediciones de los 30 productos de la canasta básica en Honduras. En el cual analizan un estimado de 8 mercados, entre los 2 departamentos mas grandes de Honduras.
-
-## **Estructura del Repositorio**
-El repositorio alojado y versionado en GitHub, cada una de estas carpetas contienen 1 archivo notebook y por capa de cada objeto creado o ejecutado.
-
-- DDL: Para la elaboración de los objetos tales como tablas Delta, vistas, esquemas.
-- EDA: Contiene el análisis correspondiente de la exploración de los datos
-- ETL: Para la extracción de los datos, Transformación y Carga de dichos registros para la siguiente capa.
-- Dashboard: Se maneja el guardado del archivo de PowerBI como respaldo en nube
-- Jobs: Versionamiento para los Jobs que se ejecutan, así como las parametrizaciones correspondientes.
-- PDF_Files: Se almacena los PDF fuente de la información mensual de los precios, dicha carpeta es leída por el JOB para pasar los datos a DeepSeek para su retorno como un formato válido.
-
-
-
+<img width="802" height="274" alt="JOB
