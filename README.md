@@ -61,10 +61,10 @@ Se integró un JOB en el cual se encarga de ejecutarse de manera quincenal, el c
 Se aplicó en la Capa Gold, el diseño de **Star Schema**, el cual permite mantener la granularidad de los datos, optimizado para las consultas y las relaciones con su tabla de hechos.
 
 **Tablas Dimensionales:**
-Dim_Time: Utilizada bajo SCD_0, por su nulo cambio de los datos, el cual almacena los periodos de tiempo del análisis de los precios 
-Dim_Product: Utilizada para almacenar el listado de los productos de la canasta, utilizando el SCD_1
-Dim_Market: Almacena el nombre de los mercados en los que se aplica el análisis de los precios de los productos, utilizando el SCD_1
-Fact_Products:Tabla de hechos, diseñada con la granularidad de mantener la estructura de entidad/relación con las tablas DIM, bajo la cardinalidad de sus llaves foráneas (FK) hacia las llaves principales (PK) de las tablas dimensión
+* **`Dim_Time` Utilizada bajo SCD_0, por su nulo cambio de los datos, el cual almacena los periodos de tiempo del análisis de los precios 
+* **`Dim_Product` Utilizada para almacenar el listado de los productos de la canasta, utilizando el SCD_1
+* **`Dim_Market` Almacena el nombre de los mercados en los que se aplica el análisis de los precios de los productos, utilizando el SCD_1
+* **`Fact_Products` Tabla de hechos, diseñada con la granularidad de mantener la estructura de entidad/relación con las tablas DIM, bajo la cardinalidad de sus llaves foráneas (FK) hacia las llaves principales (PK) de las tablas dimensión
 
 ## **Dashboard Análitico**
 
