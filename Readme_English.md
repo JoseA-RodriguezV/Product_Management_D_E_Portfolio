@@ -43,7 +43,7 @@ A **Databricks Job** was integrated to run bi-weekly, orchestrating the end-to-e
 
 <img width="970" height="527" alt="Job_2" src="https://github.com/user-attachments/assets/fa685582-d3bb-4c7a-9dbf-42b0d409c618" />
 
-## **Technologies Used**
+## **Used Technologies**
 
 * **Processing Engine:** Databricks / Apache Spark
 * **Languages:** SQL (Spark SQL), Python
